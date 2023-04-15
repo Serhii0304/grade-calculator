@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Калькулятор середнього балу</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        #grades-container {
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .grades-column {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-right: 10px;
+        }
+        .bottom-container {
+            display: flex;
+            align-items: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Калькулятор середнього балу Сергія Олександровича</h1>
+    <p style="font-size: 26px;">Введіть оцінку та натисніть Enter:</p>
+    <input id="grade-input" type="number" min="1" max="12" style="font-size: 36px; text-align: center;">
+
+    <div id="grades-container"></div>
+
+    <div class="bottom-container">
+        <div>
+            <span style="font-size: 26px;">Середня оцінка: </span><span id="average-value" style="font-size: 36px;"></span>
+        </div>
+        <button id="reset-button" style="font-size: 24px; margin-left: 10px;">Скинути</button>
+    </div>
+
+    <script>
+        const gradeInput = document.getElementById('grade-input');
+        const gradesContainer = document.getElementById('grades-container');
+        const averageValue = document.getElementById('average-value');
+        const resetButton = document.getElementById('reset-button');
+
+        const grades = [];
+        let gradesColumn = createGradesColumn();
+
+        gradeInput.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                const grade = parseFloat(gradeInput.value);
+
+                if (grade >= 1 && grade <= 12) {
+                    grades.push(grade);
+                    gradeInput.value = '';
+
+                    const gradeDiv = document.createElement('div');
+                    gradeDiv.textContent = grade;
+                    gradeDiv.style.fontSize = '36px';
+                    gradesColumn.appendChild(gradeDiv);
+
+                    if (grades.length % 10 === 0) {
+                        gradesColumn = createGradesColumn();
+                    }
+
+                    calculateAverage();
+                }
+            }
+        });
+
+        resetButton.addEventListener('click', () => {
+            grades.length = 0;
+            gradesContainer.innerHTML = '';
+            gradesColumn = createGradesColumn();
+            calculateAverage();
+        });
+
+        function createGradesColumn() {
+            const column = document.createElement('div');
+            column.classList.add('grades-column');
+            gradesContainer.appendChild(column);
+            return column;
+        }
+
+        function calculateAverage() {
+            if (grades.length > 0) {
+                const sum = grades.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+                const average = sum / grades.length;
+                averageValue.textContent = average.toFixed(1);
+            } else {
+                averageValue.textContent = '';
+            }
+        }
+    </script>
+</body>
+</html>
